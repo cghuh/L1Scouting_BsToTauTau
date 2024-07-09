@@ -1,14 +1,8 @@
 import os, math, sys
 import time
-#from ROOT import TFile, TH1F, gROOT, TTree, Double, TChain, TLorentzVector, TVector3
-#import numpy as num
-
-from distutils.ccompiler import gen_lib_options
-#from TreeProducerBcJpsiTauNu import *
 from DeltaR import returndR
 import copy
 import random
-#import numpy as np
 from ROOT import *
 import ROOT
 from DisplayManager import DisplayManager
@@ -33,7 +27,7 @@ def Plots(hists, titles, isLog=False, pname='sync.pdf', isScale = False, isRatio
     for string in strings_to_remove:
         cname = cname.replace(string, "_")
     c1 = TCanvas(cname,"",700,700)
-    hists.SetMaximum(8)
+    #hists.SetMaximum(8)
     if isScale:
         hists.Scale(1./hists.GetSumOfWeights())
         hists.GetYaxis().SetRangeUser(1e-4,2)
@@ -102,9 +96,11 @@ def comparisonPlots2D(hist1, hist2, hist3, titles, isLog=False, pname='sync.pdf'
     #ROOT.gPad.SetRightMargin(0.15)
     if isLog:
         c1.SetLogz()
-    hist1.SetMarkerSize(1)
-    hist2.SetMarkerSize(1)
-    hist3.SetMarkerSize(1)
+    hist1.SetMarkerSize(0.9)
+    hist2.SetMarkerSize(3.0)
+    hist3.SetMarkerSize(3.0)
+    hist2.SetMarkerStyle(29)
+    hist3.SetMarkerStyle(29)
     if isGen == True:
         hist1.SetMarkerSize(1.5)
     hist1.SetMarkerColor(1)
@@ -127,6 +123,11 @@ def comparisonPlots2D(hist1, hist2, hist3, titles, isLog=False, pname='sync.pdf'
     c1.Print(pname)
     ofile.cd()
     c1.Write()
+    hist1.SetMarkerSize(1)
+    hist2.SetMarkerSize(1)
+    hist3.SetMarkerSize(1)
+    hist2.SetMarkerStyle(1)
+    hist3.SetMarkerStyle(1)
 
 def comparisonPlot3D(hist1, hist2, hist3, titles, isLog=False, pname='sync.pdf', isGen = False, isRatio=False, isLegend=False):
     strings_to_remove = ["/", ".png"]
@@ -140,9 +141,11 @@ def comparisonPlot3D(hist1, hist2, hist3, titles, isLog=False, pname='sync.pdf',
     #ROOT.gPad.SetRightMargin(0.15)
     hist1.GetZaxis().SetNdivisions(506)
     hist1.GetZaxis().SetTitleOffset(0.8)
-    hist1.SetMarkerSize(1)
-    hist2.SetMarkerSize(1)
-    hist3.SetMarkerSize(1)
+    hist1.SetMarkerSize(0.9)
+    hist2.SetMarkerSize(3.0)
+    hist3.SetMarkerSize(3.0)
+    hist2.SetMarkerStyle(29)
+    hist3.SetMarkerStyle(29)
     hist1.SetMarkerColor(1)
     hist2.SetMarkerColor(2)
     hist3.SetMarkerColor(4)
@@ -163,6 +166,11 @@ def comparisonPlot3D(hist1, hist2, hist3, titles, isLog=False, pname='sync.pdf',
     c1.Print(pname)
     ofile.cd()
     c1.Write()
+    hist1.SetMarkerSize(1)
+    hist2.SetMarkerSize(1)
+    hist3.SetMarkerSize(1)
+    hist2.SetMarkerStyle(1)
+    hist3.SetMarkerStyle(1)
 
 def comparisonPlots(hist1, hist2, isLog=False, pname='sync.pdf', isScale = False, isGen=False, isLegend=False):
     strings_to_remove = ["/", ".png"]
@@ -348,6 +356,8 @@ h_200_trk_match_2_phi_eta_z0 = ROOT.TH3F("h_200_trk_match_2_phi_eta_z0", ";z;#ph
 h_200_trk_match_1_z0         = ROOT.TH1F("h_200_trk_match_1_z0",";z",300,-15,15)
 h_200_trk_match_2_z0         = ROOT.TH1F("h_200_trk_match_2_z0",";z",300,-15,15)
 
+h_200_ntrack = ROOT.TH1F("h_200_ntrack",";N_{track}",40,0,400)
+
 h_MinBias_trk_dR         = ROOT.TH1F("h_MinBias_trk_dr",";min #Delta R_{gen, TTrack}",100,0,0.5)
 h_MinBias_trk_iso        = ROOT.TH1F("h_MinBias_trk_iso",";min #Delta R_{TTracks}",100,0,2)
 h_MinBias_trk_pt         = ROOT.TH1F("h_MinBias_trk_pt",";p_{T} [GeV]",100,0,20)
@@ -408,11 +418,11 @@ tree.SetBranchStatus('*', 0)
 tree.SetBranchStatus('gen_*', 1)
 tree.SetBranchStatus('trk_*', 1)
 Nevt = tree.GetEntries()
+
 print('Total Number of events = ', Nevt)
 
 for evt in range(Nevt):
     tree.GetEntry(evt)
-
     if evt%10000==0: 
         time_elapsed = time.time() - start_time
         print('{0:.2f}'.format(float(evt)/float(Nevt)*100.), '% processed ', '{0:.2f}'.format(float(evt)/float(time_elapsed)), 'Hz')
@@ -553,8 +563,6 @@ comparisonPlots(h_0_trk_iso, h_0_trk_match_iso, True, 'Plots'+str(npu)+'/compare
 comparisonPlots(h_0_trk_pt, h_0_trk_match_pt, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_pt.GetName() + '.png', True, False, True)
 comparisonPlots(h_0_trk_eta, h_0_trk_match_eta, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_eta.GetName() + '.png', True, False, True)
 comparisonPlots(h_0_trk_phi, h_0_trk_match_phi, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_phi.GetName() + '.png', True, False, True)
-# if npu == 'minBias':
-#     comparisonPlots(h_0_trk_z0, h_0_trk_match_z0, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_z0.GetName() + '.png', True, False, True)
 comparisonPlots(h_0_trk_nstub, h_0_trk_match_nstub, False, 'Plots'+str(npu)+'/compare_' + h_0_trk_nstub.GetName() + '.png', True, False, True)
 comparisonPlots(h_0_trk_chi2dof, h_0_trk_match_chi2dof, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_chi2dof.GetName() + '.png', True, False, True)
 comparisonPlots(h_0_trk_chi2rphi, h_0_trk_match_chi2rphi, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_chi2rphi.GetName() + '.png', True, False, True)
@@ -564,7 +572,6 @@ comparisonPlots(h_0_trk_hitpattern, h_0_trk_match_hitpattern, True, 'Plots'+str(
 comparisonPlots(h_0_trk_MVA1, h_0_trk_match_MVA1, True, 'Plots'+str(npu)+'/compare_' + h_0_trk_MVA1.GetName() + '.png', True, False, True)
         
 print(nct)
-file.Close()
 
 nct=0
 start_time = time.time()
@@ -581,6 +588,7 @@ print('Total Number of events = ', Nevt)
 for evt in range(Nevt):
     tree.GetEntry(evt)
 
+    h_200_ntrack.Fill(len(tree.trk_pt))
     if evt%10000==0: 
         time_elapsed = time.time() - start_time
         print('{0:.2f}'.format(float(evt)/float(Nevt)*100.), '% processed ', '{0:.2f}'.format(float(evt)/float(time_elapsed)), 'Hz')
@@ -657,6 +665,15 @@ for evt in range(Nevt):
                     h_200_trk_match_2_phi_eta.Fill(tree.trk_eta[itrk], tree.trk_phi[itrk])
                     h_200_trk_match_2_phi_eta_z0.Fill(tree.trk_z0[itrk], tree.trk_phi[itrk],tree.trk_eta[itrk])
                     h_200_trk_match_2_z0.Fill(tree.trk_z0[itrk])
+        else: 
+            h_200_trk_z0.Fill(tree.trk_z0[itrk])
+            if not npu == 'minBias':
+                h_200_trk_z0_weight_all.Fill(tree.trk_z0[itrk]*tree.trk_pt[itrk]/sumpt)
+                h_200_trk_phi_eta.Fill(tree.trk_eta[itrk], tree.trk_phi[itrk])
+                h_200_trk_phi_eta_weight.Fill(tree.trk_eta[itrk], tree.trk_phi[itrk],tree.trk_pt[itrk]/sumpt)
+                h_200_trk_phi_eta_z0.Fill(tree.trk_z0[itrk], tree.trk_phi[itrk],tree.trk_eta[itrk])
+                if cnt1 >= 6:
+                    break
         
         h_200_trk_dR.Fill(dRmin)
         h_200_trk_iso.Fill(dRiso)
@@ -664,7 +681,7 @@ for evt in range(Nevt):
         h_200_trk_eta.Fill(tree.trk_eta[itrk])
         h_200_trk_phi.Fill(tree.trk_phi[itrk])
         h_200_trk_d0.Fill(tree.trk_d0[itrk])
-        h_200_trk_z0.Fill(tree.trk_z0[itrk])
+        #h_200_trk_z0.Fill(tree.trk_z0[itrk])
         h_200_trk_nstub.Fill(tree.trk_nstub[itrk])
         h_200_trk_chi2dof.Fill(tree.trk_chi2dof[itrk])
         h_200_trk_chi2rphi.Fill(tree.trk_chi2rphi[itrk])
@@ -672,13 +689,6 @@ for evt in range(Nevt):
         h_200_trk_bendchi2.Fill(tree.trk_bendchi2[itrk])
         h_200_trk_hitpattern.Fill(tree.trk_hitpattern[itrk])
         h_200_trk_MVA1.Fill(tree.trk_MVA1[itrk])
-        if not npu == 'minBias':
-            h_200_trk_z0_weight_all.Fill(tree.trk_z0[itrk]*tree.trk_pt[itrk]/sumpt)
-            h_200_trk_phi_eta.Fill(tree.trk_eta[itrk], tree.trk_phi[itrk])
-            h_200_trk_phi_eta_weight.Fill(tree.trk_eta[itrk], tree.trk_phi[itrk],tree.trk_pt[itrk]/sumpt)
-            h_200_trk_phi_eta_z0.Fill(tree.trk_z0[itrk], tree.trk_phi[itrk],tree.trk_eta[itrk])
-            if cnt1 >= 6:
-                break
 
     if not (npu == 'minBias'):
         #Plot2D(h_200_trk_phi_eta, titles, False, 'Plots'+str(npu)+'/' + h_200_trk_phi_eta.GetName() +str(evt)+'.png', False, False, False)
@@ -714,6 +724,7 @@ for evt in range(Nevt):
         h_200_trk_match_1_z0.Reset()
         h_200_trk_match_2_z0.Reset()
 
+Plots(h_200_ntrack, titles, False, 'Plots'+str(npu)+'/' + h_200_ntrack.GetName() + '.png', False, False, False)
 comparisonPlots(h_200_trk_dR, h_200_trk_match_dR, True, 'Plots'+str(npu)+'/compare_' + h_200_trk_dR.GetName() + '.png', True, False, True)
 comparisonPlots(h_200_trk_iso, h_200_trk_match_iso, True, 'Plots'+str(npu)+'/compare_' + h_200_trk_iso.GetName() + '.png', True, False, True)
 comparisonPlots(h_200_trk_pt, h_200_trk_match_pt, True, 'Plots'+str(npu)+'/compare_' + h_200_trk_pt.GetName() + '.png', True, False, True)

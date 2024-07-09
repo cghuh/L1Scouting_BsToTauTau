@@ -12,6 +12,12 @@ def returndR( e1, p1, e2, p2):
     dp = deltaPhi(p1, p2)
     return math.sqrt(de*de + dp*dp)
 
+def returndRs( e1, p1, z1, e2, p2, z2):
+    de = e1 - e2
+    dp = deltaPhi(p1, p2)
+    dz = z1 - z2
+    return math.sqrt(de*de + dp*dp + dz*dz)
+
 
 def deltaR(p1, p2):
     return math.sqrt(deltaR2(p1.eta(), p1.phi(), p2.eta(), p2.phi()))
