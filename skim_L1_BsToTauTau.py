@@ -12,7 +12,7 @@ start_time = time.time()
 parser = argparse.ArgumentParser()
 parser.add_argument('fname', type=str, help='file name')
 parser.add_argument('pnevt_PU0', type=int, help='number of previous events for PU0')
-parser.add_argument('pnevt_PU200', type=int, help='number of previous events for PU200')
+#parser.add_argument('pnevt_PU200', type=int, help='number of previous events for PU200')
 args = parser.parse_args()
 
 def process_file(file_list, output_name, start_event):
@@ -34,6 +34,7 @@ def process_file(file_list, output_name, start_event):
     _d0 = std.vector('float')()
     _MVA = std.vector('float')()
     _dR = std.vector('float')()
+    _dz = std.vector('float')()
     _dRs = std.vector('float')()
     _gen = std.vector('int')()
 
@@ -57,6 +58,7 @@ def process_file(file_list, output_name, start_event):
     oput.Branch("trk_d0", _d0)
     oput.Branch("trk_MVA", _MVA)
     oput.Branch("trk_dR", _dR)
+    oput.Branch("trk_dz", _dz)
     oput.Branch("trk_dRs", _dRs)
     oput.Branch("trk_gen", _gen)
 
@@ -66,6 +68,7 @@ def process_file(file_list, output_name, start_event):
     for entry in range(Nevt):
         chain.GetEntry(entry)
         _dR.clear()
+        _dz.clear()
         _dRs.clear()
         _gen.clear()
         evt += 1
@@ -92,6 +95,7 @@ def process_file(file_list, output_name, start_event):
 
         for itrk in range(len(chain.trk_pt)):
             dRmin = 999.
+            dzmin = 999.
             dRiso = 999.
             dRsmin = 999.
             gen = 0
@@ -101,6 +105,9 @@ def process_file(file_list, output_name, start_event):
                 dR = returndR(chain.trk_eta[itrk], chain.trk_phi[itrk], chain.trk_eta[jtrk], chain.trk_phi[jtrk])
                 if dR < dRiso:
                     dRiso = dR
+                dR = abs(chain.trk_z0[itrk]-chain.trk_z0[jtrk]) 
+                if dR < dzmin:
+                    dzmin = dR
                 dR = returndRs(chain.trk_eta[itrk], chain.trk_phi[itrk], chain.trk_z0[itrk], chain.trk_eta[jtrk], chain.trk_phi[jtrk], chain.trk_z0[jtrk])
                 if dR < dRsmin:
                     dRsmin = dR
@@ -118,6 +125,7 @@ def process_file(file_list, output_name, start_event):
                     gen = 2
 
             _dR.push_back(dRiso)
+            _dz.push_back(dzmin)
             _dRs.push_back(dRsmin)
             _gen.push_back(gen)
         oput.Fill()
@@ -125,12 +133,12 @@ def process_file(file_list, output_name, start_event):
     oput.Write()
     ofile.Close()
 
-if args.fname != 'minBias':
-    file_list_PU0 = ['/eos/cms/store/user/chuh/l1p2/PU0/Tau3pi_PY8_PU0_GTT_' + args.fname + '.root']
-    process_file(file_list_PU0, "output_PU0.root", args.pnevt_PU0 - 1)
-
-    file_list_PU200 = ['/eos/cms/store/user/chuh/l1p2/PU200/Tau3pi_PY8_PU200_GTT_' + args.fname + '.root']
-    process_file(file_list_PU200, "output_PU200.root", args.pnevt_PU200 - 1)
-else:
+if args.fname == 'PU0':
+    file_list_PU0 = ['/eos/cms/store/user/chuh/l1p2/PU0/Tau3pi_PY8_PU0_GTT_' + str(args.pnevt_PU0) + '.root']
+    process_file(file_list_PU0, "output_PU0.root", -1)
+elif args.fname == 'PU200':
+    file_list_PU200 = ['/eos/cms/store/user/chuh/l1p2/PU200/Tau3pi_PY8_PU200_GTT_' + str(args.pnevt_PU0) + '.root']
+    process_file(file_list_PU200, "output_PU200.root", -1)
+elif args.fname == 'minBias':
     file_list_minBias = ['/eos/cms/store/user/chuh/l1p2/MinBias/MinBias_TuneCP5_14TeV-pythia8_GTT_' + str(args.pnevt_PU0) + '.root']
     process_file(file_list_minBias, "output_minBias.root", -1)
