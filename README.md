@@ -1,3 +1,10 @@
+# Description for Higgs to 3 prong
+- The ntuples are skimmed and some gen matching variables are added using ```skim_L1_BsToTauTau.py``` (Need to modify for H to ccbar in later). HTCondor job submission codes are ```skim.submit``` and ```skim.sh```.
+- The ntuple running code is ```run_L1_HToTauTau.py```. You can make and fill the histograms or graphs in here. HTCondor job submission codes are ```analysis.submit``` and ```analysis.sh```. You must fix #7 of ```analysis.sh```.
+- The plotting code is ```plot_L1_HToTauTau.py```. This code requires input histograms from HToTauTau(PU200) and minBias. You should merge all the outputs from ```run_L1_HToTauTau.py``` for plotting.
+
+
+# Description for Bs to tau tau
 Run original code to produce TTree from ntuples (Gen - TTrack)
 - ```python runTauDisplay_BcJpsiTauNu_org.py```
 - ```python compare.py``` (plotting)
