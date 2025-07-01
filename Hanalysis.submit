@@ -4,13 +4,12 @@ Error = log/job_$(Process).err
 Output = log/job_$(Process).out
 Log = log/job.log
 
-+JobFlavour = testmatch
++JobFlavour = espresso
 +MaxRuntime = 86400
 getenv      = True
 transfer_output_files = ""
 
-Executable = skim.sh
+Executable = Hanalysis.sh
 Arguments = $(channel)
 
 Queue channel from filelist.txt
-#Queue channel from rerun.txt
