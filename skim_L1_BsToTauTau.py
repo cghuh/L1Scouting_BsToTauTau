@@ -16,7 +16,8 @@ parser.add_argument('pnevt_PU0', type=int, help='number of previous events for P
 args = parser.parse_args()
 
 def process_file(file_list, output_name, start_event):
-    chain = TChain("L1TrackNtuple/eventTree")
+    #chain = TChain("L1TrackNtuple/eventTree")
+    chain = TChain("eventTree")
     for file_name in file_list:
         chain.Add(file_name)
     Nevt = chain.GetEntries()

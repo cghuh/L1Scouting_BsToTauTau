@@ -63,17 +63,17 @@ def officialStyle(style):
 
     style.SetTitleSize  (0.05,"X")
     style.SetTitleOffset(1.200,"X")
-    style.SetLabelOffset(0.005,"X")
-    style.SetLabelSize  (0.050,"X")
+    style.SetLabelOffset(0.015,"X")
+    style.SetLabelSize  (0.045,"X")
     style.SetLabelFont  (42   ,"X")
 
     style.SetStripDecimals(False)
     style.SetLineStyleString(11,"20 10")
 
     style.SetTitleSize  (0.05,"Y")
-    style.SetTitleOffset(1.200,"Y")
-    style.SetLabelOffset(0.005,"Y")
-    style.SetLabelSize  (0.050,"Y")
+    style.SetTitleOffset(1.300,"Y")
+    style.SetLabelOffset(0.003,"Y")
+    style.SetLabelSize  (0.045,"Y")
     style.SetLabelFont  (42   ,"Y")
 
     style.SetTitleSize  (0.05,"Z")
