@@ -4,12 +4,14 @@ Error = log/job_$(Process).err
 Output = log/job_$(Process).out
 Log = log/job.log
 
-+JobFlavour = espresso
++JobFlavour = microcentury
 +MaxRuntime = 86400
 getenv      = True
+transfer_input_files  = vendor_full.tgz
 transfer_output_files = ""
 
 Executable = analysis.sh
 Arguments = $(channel)
 
 Queue channel from filelist.txt
+#Queue channel from rerun.txt
